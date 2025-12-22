@@ -13,6 +13,16 @@ app.get("/health", (req, res) => {
     res.send("Citizen Sahyog Backend is running");
 });
 
+const protect = require("./middlewares/authMiddleWares");
+
+app.get("/api/protected", protect, (req, res) => {
+  res.json({
+    message: "Access granted",
+    user: req.user
+  });
+});
+
+
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
