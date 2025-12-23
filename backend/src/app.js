@@ -26,6 +26,10 @@ app.get("/api/protected", protect, (req, res) => {
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
+const complaintRoutes = require("./routes/complaintRoutes");
+
+app.use("/api/complaints", complaintRoutes);
+
 const PORT = process.env.PORT || 7878;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
