@@ -20,6 +20,18 @@ const complaintSchema = new mongoose.Schema(
       enum: ["Road", "Water", "Electricity", "Sanitation", "Other"],
       default: "Other"
     },
+    media: [
+  {
+    url: {
+      type: String
+    },
+    type: {
+      type: String,
+      enum: ["image", "video"]
+    }
+  }
+],
+
     location: {
       type: String
     },
