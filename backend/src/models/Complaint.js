@@ -7,39 +7,68 @@ const complaintSchema = new mongoose.Schema(
       ref: "User",
       required: true
     },
+
     title: {
       type: String,
       required: true
     },
+
     description: {
       type: String,
       required: true
     },
+
     category: {
       type: String,
       enum: ["Road", "Water", "Electricity", "Sanitation", "Other"],
       default: "Other"
     },
+
     media: [
-  {
-    url: {
-      type: String
-    },
-    type: {
-      type: String,
-      enum: ["image", "video"]
-    }
-  }
-],
+      {
+        url: {
+          type: String
+        },
+        type: {
+          type: String,
+          enum: ["image", "video"]
+        }
+      }
+    ],
 
     location: {
       type: String
     },
+
     status: {
       type: String,
       enum: ["Pending", "In Progress", "Resolved"],
       default: "Pending"
-    }
+    },
+
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ],
+
+    comments: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User"
+        },
+        text: {
+          type: String,
+          required: true
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now
+        }
+      }
+    ]
   },
   { timestamps: true }
 );
