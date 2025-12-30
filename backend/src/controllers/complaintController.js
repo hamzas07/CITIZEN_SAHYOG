@@ -2,30 +2,38 @@ const Complaint = require("../models/Complaint");
 
 const createComplaint = async (req, res) => {
   try {
-    const { title, description, category,media, location } = req.body;
+    console.log(req.body);
+    console.log(req.files);
+    console.log(req.user);
 
-    if (!title || !description) {
-      return res.status(400).json({ message: "Title and description required" });
-    }
+    const media = req.files
+      ? req.files.map(file => ({
+          url: file.path,
+          type: file.mimetype.startsWith("video") ? "video" : "image"
+        }))
+      : [];
 
     const complaint = await Complaint.create({
-      user: req.user.userId,
-      title,
-      description,
-      category,
-      media,
-      location
+      user: req.user.userId, // ✅ FIXED
+      title: req.body.title,
+      description: req.body.description,
+      category: req.body.category,
+      location: req.body.location,
+      media
     });
 
     res.status(201).json({
-      message: "Complaint submitted successfully",
+      message: "Complaint created",
       complaint
     });
 
   } catch (error) {
+    console.error("CREATE COMPLAINT ERROR:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
 
 const getAllComplaints = async (req, res) => {
   try {
