@@ -26,9 +26,7 @@ const complaintSchema = new mongoose.Schema(
 
     media: [
       {
-        url: {
-          type: String
-        },
+        url: String,
         type: {
           type: String,
           enum: ["image", "video"]
@@ -36,8 +34,17 @@ const complaintSchema = new mongoose.Schema(
       }
     ],
 
+    // 📍 NEW LOCATION FIELD (FOR MAP)
     location: {
-      type: String
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point"
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        required: true
+      }
     },
 
     status: {
@@ -72,5 +79,8 @@ const complaintSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// 🔥 REQUIRED FOR GEO QUERIES
+complaintSchema.index({ location: "2dsphere" });
 
 module.exports = mongoose.model("Complaint", complaintSchema);

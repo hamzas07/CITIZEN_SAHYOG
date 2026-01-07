@@ -3,6 +3,8 @@ const router = express.Router();
 
 const protect = require("../middlewares/authMiddleWares");
 const upload = require("../middlewares/uploadMiddleware");
+const { getComplaintsForMap,getNearbyComplaints } = require("../controllers/complaintController");
+
 
 const {
   createComplaint,
@@ -31,5 +33,11 @@ router.patch("/like/:id", protect, likeComplaint);
 
 // Comment
 router.post("/comment/:id", protect, addComment);
+
+router.get("/map", getComplaintsForMap);
+
+router.get("/nearby", getNearbyComplaints);
+
+
 
 module.exports = router;

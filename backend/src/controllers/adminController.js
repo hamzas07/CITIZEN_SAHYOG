@@ -69,9 +69,15 @@ const blockUser = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  const users = await User.find().select("-password");
+  res.json(users);
+};
+
 module.exports = {
   getAllComplaints,
   updateComplaintStatus,
   deleteComplaint,
-  blockUser
+  blockUser,
+  getAllUsers
 };

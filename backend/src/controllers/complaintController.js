@@ -6,24 +6,39 @@ const createComplaint = async (req, res) => {
     console.log(req.files);
     console.log(req.user);
 
+    const { title, description, category, latitude, longitude } = req.body;
+
+    // 🛑 Location validation
+    if (!latitude || !longitude) {
+      return res.status(400).json({
+        message: "Latitude and Longitude are required"
+      });
+    }
+
     const media = req.files
       ? req.files.map(file => ({
-          url: file.path,
+          url: file.secure_url || file.path,
           type: file.mimetype.startsWith("video") ? "video" : "image"
         }))
       : [];
 
     const complaint = await Complaint.create({
-      user: req.user.userId, // ✅ FIXED
-      title: req.body.title,
-      description: req.body.description,
-      category: req.body.category,
-      location: req.body.location,
-      media
+      user: req.user.userId,
+      title,
+      description,
+      category,
+      media,
+      location: {
+        type: "Point",
+        coordinates: [
+          Number(longitude), // ✅ MongoDB expects lng first
+          Number(latitude)
+        ]
+      }
     });
 
     res.status(201).json({
-      message: "Complaint created",
+      message: "Complaint created successfully",
       complaint
     });
 
@@ -35,10 +50,12 @@ const createComplaint = async (req, res) => {
 
 
 
+
+
 const getAllComplaints = async (req, res) => {
   try {
     const complaints = await Complaint.find()
-      .populate("user", "name")
+      .populate("user", "name email")
       .sort({ createdAt: -1 });
 
     res.status(200).json(complaints);
@@ -119,7 +136,53 @@ const addComment = async (req, res) => {
   }
 };
 
+const getComplaintsForMap = async (req, res) => {
+  try {
+    const complaints = await Complaint.find(
+      { location: { $exists: true } },
+      {
+        title: 1,
+        category: 1,
+        status: 1,
+        location: 1
+      }
+    );
+
+    res.status(200).json(complaints);
+  } catch (error) {
+    console.error("MAP FETCH ERROR:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getNearbyComplaints = async (req, res) => {
+  try {
+    const { lat, lng } = req.query;
+
+    if (!lat || !lng) {
+      return res.status(400).json({ message: "Latitude & Longitude required" });
+    }
+
+    const complaints = await Complaint.find({
+      location: {
+        $near: {
+          $geometry: {
+            type: "Point",
+            coordinates: [parseFloat(lng), parseFloat(lat)]
+          },
+          $maxDistance: 5000 // 5 km
+        }
+      }
+    });
+
+    res.status(200).json(complaints);
+  } catch (error) {
+    console.error("NEARBY FETCH ERROR:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 
 
-module.exports = { createComplaint,getAllComplaints,getMyComplaints,likeComplaint,addComment };
+
+module.exports = { createComplaint,getAllComplaints,getMyComplaints,likeComplaint,addComment,getComplaintsForMap,getNearbyComplaints };

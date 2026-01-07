@@ -8,11 +8,13 @@ const {
   getAllComplaints,
   updateComplaintStatus,
   deleteComplaint,
-  blockUser
+  blockUser,
+  getAllUsers
 } = require("../controllers/adminController");
 
 // View all complaints
 router.get("/complaints", protect, adminOnly, getAllComplaints);
+router.get("/users/list", protect, adminOnly, getAllUsers);
 
 // Update complaint status
 router.put(
@@ -37,5 +39,7 @@ router.put(
   adminOnly,
   blockUser
 );
+
+
 
 module.exports = router;
