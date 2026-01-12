@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:7878/api/admin";
+const API = "https://citizen-sahyog.onrender.com/api/admin";
 
 const token = () => ({
   headers: {
