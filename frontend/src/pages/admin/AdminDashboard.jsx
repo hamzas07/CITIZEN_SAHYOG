@@ -4,8 +4,7 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  TrendingUp,
-  Users
+  TrendingUp
 } from "lucide-react";
 
 import StatCard from "../../components/ui/StatCard";
@@ -19,7 +18,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Fetch complaints
+  /* ================= FETCH ================= */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,11 +30,10 @@ export default function AdminDashboard() {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
-  // ---- Stats Calculation ----
+  /* ================= STATS ================= */
   const total = complaints.length;
   const pending = complaints.filter(c => c.status === "Pending").length;
   const inProgress = complaints.filter(c => c.status === "In Progress").length;
@@ -47,25 +45,33 @@ export default function AdminDashboard() {
 
   const recentComplaints = complaints.slice(0, 5);
 
-  // ---- Helpers ----
-  const getStatusBadge = (status) => {
+  /* ================= HELPERS ================= */
+  const getStatusBadge = (status = "") => {
     switch (status) {
-      case "pending":
+      case "Pending":
         return "bg-yellow-500/20 text-yellow-600";
-      case "in_progress":
+      case "In Progress":
         return "bg-blue-500/20 text-blue-600";
-      case "resolved":
+      case "Resolved":
         return "bg-green-500/20 text-green-600";
       default:
         return "bg-gray-500/20 text-gray-600";
     }
   };
 
-  const getCategoryBadge = (category) => {
-    return "bg-primary/80";
-  };
+  const getImageUrl = (complaint) => {
+  if (
+    Array.isArray(complaint.media) &&
+    complaint.media.length > 0 &&
+    complaint.media[0]?.url
+  ) {
+    return complaint.media[0].url;
+  }
+  return null;
+};
 
-  // ---- UI STATES ----
+
+  /* ================= UI STATES ================= */
   if (loading) {
     return <p className="text-muted-foreground">Loading admin dashboard...</p>;
   }
@@ -79,9 +85,7 @@ export default function AdminDashboard() {
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-foreground">
-          Admin Dashboard
-        </h1>
+        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
         <p className="text-muted-foreground mt-1">
           Welcome back, <span className="text-primary">{user?.name}</span>
         </p>
@@ -95,14 +99,9 @@ export default function AdminDashboard() {
         <StatCard title="Resolved" value={resolved} icon={CheckCircle} color="success" />
       </div>
 
-      {/* Secondary Stats */}
+      {/* Resolution */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="bg-card rounded-xl border border-border p-6">
-          <p className="text-sm text-muted-foreground">Total Complaints</p>
-          <p className="text-3xl font-bold mt-1">{total}</p>
-        </div>
-
-        <div className="bg-card rounded-xl border border-border p-6">
+        <div className="bg-card p-6 rounded-xl border">
           <p className="text-sm text-muted-foreground">Resolution Rate</p>
           <p className="text-3xl font-bold mt-1">{resolutionRate}%</p>
           <p className="text-xs text-success mt-2 flex items-center gap-1">
@@ -112,8 +111,8 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Complaints */}
-      <div className="bg-card rounded-xl border border-border">
-        <div className="p-6 border-b border-border flex justify-between">
+      <div className="bg-card rounded-xl border">
+        <div className="p-6 border-b flex justify-between">
           <h2 className="text-lg font-semibold">Recent Complaints</h2>
           <a href="/admin/complaints" className="text-sm text-primary hover:underline">
             View all
@@ -123,47 +122,63 @@ export default function AdminDashboard() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-border">
-                <th className="px-6 py-3 text-left text-xs text-muted-foreground">Title</th>
-                <th className="px-6 py-3 text-left text-xs text-muted-foreground">User</th>
-                <th className="px-6 py-3 text-left text-xs text-muted-foreground">Category</th>
-                <th className="px-6 py-3 text-left text-xs text-muted-foreground">Status</th>
-                <th className="px-6 py-3 text-left text-xs text-muted-foreground">Date</th>
+              <tr className="border-b">
+                <th className="px-6 py-3 text-left text-xs text-muted-foreground">Image</th>
+                <th className="px-6 py-3 text-left text-xs">Title</th>
+                <th className="px-6 py-3 text-left text-xs">User</th>
+                <th className="px-6 py-3 text-left text-xs">Category</th>
+                <th className="px-6 py-3 text-left text-xs">Status</th>
+                <th className="px-6 py-3 text-left text-xs">Date</th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y">
               {recentComplaints.length === 0 && (
                 <tr>
-                  <td colSpan="5" className="px-6 py-6 text-center text-muted-foreground">
+                  <td colSpan="6" className="px-6 py-6 text-center text-muted-foreground">
                     No complaints yet
                   </td>
                 </tr>
               )}
 
-              {recentComplaints.map(c => (
-                <tr key={c._id} className="hover:bg-muted/50">
-                  <td className="px-6 py-4 text-sm font-medium">
-                    {c.title}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-muted-foreground">
-                    {c.user?.name || "Unknown"}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-0.5 rounded text-xs text-white ${getCategoryBadge(c.category)}`}>
-                      {c.category}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-0.5 rounded text-xs ${getStatusBadge(c.status)}`}>
-                      {c.status.replace("_", " ")}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-muted-foreground">
-                    {new Date(c.createdAt).toLocaleDateString("en-IN")}
-                  </td>
-                </tr>
-              ))}
+              {recentComplaints.map(c => {
+                const imageUrl = getImageUrl(c);
+
+                return (
+                  <tr key={c._id} className="hover:bg-muted/50">
+                    <td className="px-6 py-4">
+  {getImageUrl(c) ? (
+    <img
+      src={getImageUrl(c)}
+      alt="Complaint"
+      className="w-16 h-16 object-cover rounded-md border"
+    />
+  ) : (
+    <span className="text-xs text-muted-foreground">No Image</span>
+  )}
+</td>
+
+
+                    <td className="px-6 py-4 text-sm font-medium">{c.title}</td>
+
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                      {c.user?.name || "Unknown"}
+                    </td>
+
+                    <td className="px-6 py-4 text-sm">{c.category}</td>
+
+                    <td className="px-6 py-4">
+                      <span className={`px-2 py-0.5 rounded text-xs ${getStatusBadge(c.status)}`}>
+                        {c.status}
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                      {new Date(c.createdAt).toLocaleDateString("en-IN")}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

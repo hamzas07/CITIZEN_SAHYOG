@@ -13,6 +13,21 @@ L.Icon.Default.mergeOptions({
   shadowUrl:
     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
+// 🔴 User / Admin marker
+const redIcon = new L.Icon({
+  iconUrl: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
+});
+
+// 🔵 Complaint marker
+const blueIcon = new L.Icon({
+  iconUrl: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
+});
 
 
 const MapView = () => {
@@ -90,7 +105,11 @@ const MapView = () => {
         )}
 
         {/* User location */}
-        <Marker position={[location.lat, location.lng]}>
+       <Marker
+  position={[location.lat, location.lng]}
+  icon={redIcon}
+>
+
           <Popup>You are here</Popup>
         </Marker>
 
@@ -110,10 +129,12 @@ const MapView = () => {
           }
 
           return (
-           <Marker
+          <Marker
   key={complaint._id}
   position={[lat, lng]}
+  icon={blueIcon}
 >
+
 
               <Popup>
                 <h3>{complaint.title}</h3>

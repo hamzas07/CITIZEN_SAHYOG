@@ -115,12 +115,12 @@ export const mockUsers = [
 
 // Categories for complaints
 export const categories = [
-  { id: 'infrastructure', name: 'Infrastructure', color: 'bg-blue-500' },
-  { id: 'water', name: 'Water', color: 'bg-cyan-500' },
-  { id: 'sanitation', name: 'Sanitation', color: 'bg-green-500' },
-  { id: 'roads', name: 'Roads', color: 'bg-orange-500' },
+  { id: 'Infrastructure', name: 'Infrastructure', color: 'bg-blue-500' },
+  { id: 'Water', name: 'Water', color: 'bg-cyan-500' },
+  { id: 'Sanitation', name: 'Sanitation', color: 'bg-green-500' },
+  { id: 'Road', name: 'Road', color: 'bg-orange-500' },
   { id: 'Electricity', name: 'Electricity', color: 'bg-yellow-500' },
-  { id: 'other', name: 'Other', color: 'bg-purple-500' },
+  { id: 'Other', name: 'Other', color: 'bg-purple-500' },
 ];
 
 // Get category color

@@ -73,7 +73,7 @@ export default function ComplaintCard({ complaint, showUser = false }) {
     <div className="glass-strong rounded-2xl border border-border overflow-hidden card-hover">
       {/* MEDIA */}
       {hasMedia && (
-        <div className="relative h-40 bg-muted overflow-hidden">
+        <div className="relative h-30 bg-muted overflow-hidden">
           {complaint.media[0].type === "image" ? (
             <img
               src={complaint.media[0].url}

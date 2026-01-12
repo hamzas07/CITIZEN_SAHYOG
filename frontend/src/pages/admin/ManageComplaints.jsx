@@ -36,6 +36,18 @@ export default function ManageComplaints() {
     c.user?.name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // ---------------- IMAGE HELPER ----------------
+  const getImageUrl = (complaint) => {
+    if (
+      Array.isArray(complaint.media) &&
+      complaint.media.length > 0 &&
+      complaint.media[0]?.url
+    ) {
+      return complaint.media[0].url;
+    }
+    return null;
+  };
+
   // ---------------- STATUS UPDATE ----------------
   const handleStatusChange = async (id, newStatus) => {
     try {
@@ -77,11 +89,11 @@ export default function ManageComplaints() {
 
   const statusBadge = (status) => {
     switch (status) {
-      case "pending":
+      case "Pending":
         return "bg-yellow-500/20 text-yellow-600";
-      case "in_progress":
+      case "In Progress":
         return "bg-blue-500/20 text-blue-600";
-      case "resolved":
+      case "Resolved":
         return "bg-green-500/20 text-green-600";
       default:
         return "bg-gray-500/20 text-gray-600";
@@ -123,6 +135,7 @@ export default function ManageComplaints() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-border bg-muted/50">
+                <th className="px-6 py-4 text-left text-xs text-muted-foreground">Image</th>
                 <th className="px-6 py-4 text-left text-xs text-muted-foreground">Complaint</th>
                 <th className="px-6 py-4 text-left text-xs text-muted-foreground">User</th>
                 <th className="px-6 py-4 text-left text-xs text-muted-foreground">Category</th>
@@ -135,7 +148,7 @@ export default function ManageComplaints() {
             <tbody className="divide-y divide-border">
               {filteredComplaints.length === 0 && (
                 <tr>
-                  <td colSpan="6" className="text-center py-10 text-muted-foreground">
+                  <td colSpan="7" className="text-center py-10 text-muted-foreground">
                     No complaints found
                   </td>
                 </tr>
@@ -143,6 +156,21 @@ export default function ManageComplaints() {
 
               {filteredComplaints.map((c) => (
                 <tr key={c._id} className="hover:bg-muted/40">
+
+                  {/* IMAGE */}
+                  <td className="px-6 py-4">
+                    {getImageUrl(c) ? (
+                      <img
+                        src={getImageUrl(c)}
+                        alt="Complaint"
+                        className="w-16 h-16 object-cover rounded-md border"
+                      />
+                    ) : (
+                      <span className="text-xs text-muted-foreground">No Image</span>
+                    )}
+                  </td>
+
+                  {/* COMPLAINT */}
                   <td className="px-6 py-4">
                     <p className="font-medium truncate">{c.title}</p>
                     <p className="text-xs text-muted-foreground truncate">
@@ -150,16 +178,19 @@ export default function ManageComplaints() {
                     </p>
                   </td>
 
+                  {/* USER */}
                   <td className="px-6 py-4">
                     {c.user?.name || "Unknown"}
                   </td>
 
+                  {/* CATEGORY */}
                   <td className="px-6 py-4">
                     <span className="px-2 py-0.5 rounded text-xs bg-primary text-white">
                       {c.category}
                     </span>
                   </td>
 
+                  {/* STATUS */}
                   <td className="px-6 py-4">
                     {editingId === c._id ? (
                       <select
@@ -180,15 +211,17 @@ export default function ManageComplaints() {
                         onClick={() => setEditingId(c._id)}
                         className={`px-2 py-0.5 rounded text-xs ${statusBadge(c.status)}`}
                       >
-                        {c.status.replace("_", " ")}
+                        {c.status}
                       </button>
                     )}
                   </td>
 
+                  {/* DATE */}
                   <td className="px-6 py-4 text-sm text-muted-foreground whitespace-nowrap">
                     {formatDate(c.createdAt)}
                   </td>
 
+                  {/* ACTIONS */}
                   <td className="px-6 py-4">
                     <div className="flex justify-end gap-2">
                       <button
@@ -206,10 +239,10 @@ export default function ManageComplaints() {
                       </button>
                     </div>
                   </td>
+
                 </tr>
               ))}
             </tbody>
-
           </table>
         </div>
       </div>
