@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://citizen-sahyog.onrender.com";
+const API_BASE_URL = "https://citizen-sahyog.onrender.com/api";
 
 export async function getAllComplaints() {
   const token = localStorage.getItem("citizen_sahyog_token");
