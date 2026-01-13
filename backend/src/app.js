@@ -5,7 +5,7 @@ const connectdb = require("./config/db");
 const cors = require("cors");
 
 const app = express();
-app.use(cors({ origin: "http://localhost:5173", credentials: true })); // ← enable CORS
+app.use(cors({ origin: "https://citizen-sahyog-platform.vercel.app/", credentials: true })); // ← enable CORS
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
