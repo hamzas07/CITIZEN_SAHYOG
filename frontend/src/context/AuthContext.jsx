@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext(null);
-const API_BASE_URL = import.meta.env.VITE_API_URL + "/api/auth";
 
+// ✅ correct base URL
+const API_BASE_URL = import.meta.env.VITE_API_URL + "/api/auth";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -21,11 +22,11 @@ export function AuthProvider({ children }) {
   }, []);
 
   // -------------------------
-  // REAL LOGIN (BACKEND)
+  // LOGIN
   // -------------------------
   const login = async (email, password) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/login`, {
+      const res = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -60,7 +61,7 @@ export function AuthProvider({ children }) {
   };
 
   // -------------------------
-  // GUEST USER (READ-ONLY)
+  // GUEST LOGIN
   // -------------------------
   const guestLogin = () => {
     const guestUser = {
@@ -81,11 +82,11 @@ export function AuthProvider({ children }) {
   };
 
   // -------------------------
-  // REGISTER (BACKEND)
+  // REGISTER
   // -------------------------
   const register = async (name, email, password) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/register`, {
+      const res = await fetch(`${API_BASE_URL}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -114,18 +115,17 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("citizen_sahyog_token");
   };
 
-const value = {
-  user,
-  loading,
-  login,
-  guestLogin,
-  register,
-  logout,
-  isAuthenticated: !!user,
-  isAdmin: user?.role === "admin",
-  isGuest: user?.role === "guest"
-};
-
+  const value = {
+    user,
+    loading,
+    login,
+    guestLogin,
+    register,
+    logout,
+    isAuthenticated: !!user,
+    isAdmin: user?.role === "admin",
+    isGuest: user?.role === "guest"
+  };
 
   return (
     <AuthContext.Provider value={value}>
