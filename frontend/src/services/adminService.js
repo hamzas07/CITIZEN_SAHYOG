@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "https://citizen-sahyog.onrender.com/api/admin";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL + "/api/admin";
 
 const token = () => ({
   headers: {

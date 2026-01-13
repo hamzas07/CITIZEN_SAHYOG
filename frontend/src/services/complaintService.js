@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://citizen-sahyog.onrender.com/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL + "/api";
 
 export async function getAllComplaints() {
   const token = localStorage.getItem("citizen_sahyog_token");
