@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-require("dotenv").config();
 
 const AuthContext = createContext(null);
 
