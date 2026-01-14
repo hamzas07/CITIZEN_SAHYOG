@@ -54,7 +54,7 @@ const MapView = () => {
 
   // 2️⃣ Fetch complaints from backend
   useEffect(() => {
-    fetch("http://localhost:7878/api/complaints")
+    fetch("https://citizen-sahyog.onrender.com/api/complaints")
       .then(res => res.json())
       .then(data => setComplaints(data))
       .catch(err => console.error(err));
